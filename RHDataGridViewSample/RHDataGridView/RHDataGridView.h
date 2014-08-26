@@ -19,7 +19,8 @@
 -(NSInteger)dataGridView:(RHDataGridView *)dataGridView widthForColumnAtIndex:(NSInteger)columnIndex;
 -(NSInteger)dataGridView:(RHDataGridView *)dataGridView heightForRowAtIndex:(NSInteger)rowIndex;
 -(UIView *)dataGridView:(RHDataGridView *)dataGridView cellForRowAtIndex:(NSInteger)rowIndex columnAtIndex:(NSInteger)columnIndex;
-
+-(void)dataGridView:(RHDataGridView *)dataGridView didSelectRowAtIndex:(NSInteger)rowIndex;
+-(void)dataGridView:(RHDataGridView *)dataGridView didDeselectRowAtIndex:(NSInteger)rowIndex;
 @end
 
 @interface RHDataGridView : UITableView<UITableViewDataSource,UITableViewDelegate>

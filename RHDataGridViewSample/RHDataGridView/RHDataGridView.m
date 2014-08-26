@@ -93,4 +93,14 @@
     
     return headerView;
 }
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    if([self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:didSelectRowAtIndex:)]){
+        [self.dataGridViewDelegate dataGridView:self didSelectRowAtIndex:indexPath.row];
+    }
+}
+-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath{
+    if([self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:didDeselectRowAtIndex:)]){
+        [self.dataGridViewDelegate dataGridView:self didDeselectRowAtIndex:indexPath.row];
+    }
+}
 @end
