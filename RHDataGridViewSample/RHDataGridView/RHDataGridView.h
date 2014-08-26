@@ -15,10 +15,10 @@
 -(NSInteger)numberOfRowsInDataGridView:(RHDataGridView *)dataGridView;
 
 @optional
--(UIView *)dataGridView:(RHDataGridView *)dataGridView headerForColumnAtIndex:(NSInteger)columnIndex;
+-(NSString *)dataGridView:(RHDataGridView *)dataGridView headerTextForColumnAtIndex:(NSInteger)columnIndex;
 -(NSInteger)dataGridView:(RHDataGridView *)dataGridView widthForColumnAtIndex:(NSInteger)columnIndex;
 -(NSInteger)dataGridView:(RHDataGridView *)dataGridView heightForRowAtIndex:(NSInteger)rowIndex;
--(UIView *)dataGridView:(RHDataGridView *)dataGridView cellForRowAtIndex:(NSInteger)rowIndex columnAtIndex:(NSInteger)columnIndex;
+-(NSString *)dataGridView:(RHDataGridView *)dataGridView textForRowAtIndex:(NSInteger)rowIndex columnAtIndex:(NSInteger)columnIndex;
 -(void)dataGridView:(RHDataGridView *)dataGridView didSelectRowAtIndex:(NSInteger)rowIndex;
 -(void)dataGridView:(RHDataGridView *)dataGridView didDeselectRowAtIndex:(NSInteger)rowIndex;
 @end
@@ -26,5 +26,6 @@
 @interface RHDataGridView : UITableView<UITableViewDataSource,UITableViewDelegate>
 
 @property(weak,nonatomic)id<RHDataGridViewDelegate> dataGridViewDelegate;
+@property(assign,nonatomic)NSInteger columnSpacing;
 
 @end

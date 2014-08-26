@@ -25,14 +25,17 @@
     
     [self prepareData];
     
-    self.tableView.dataSource = self.tableView;
-    self.tableView.delegate = self.tableView;
+    self.tableView.columnSpacing = 20;
     self.tableView.dataGridViewDelegate = self;
+    
+    for(NSInteger i=0;i<[self.tableView numberOfRowsInSection:0];i++){
+        [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
+    }
 }
 -(void)prepareData{
     self.headers = [NSArray arrayWithObjects:@"Name",@"Age", @"Location",@"Tall",@"Job", nil];
     
-    NSArray *row1 = [NSArray arrayWithObjects:@"Jack",@"2",@"Shanghai",@"18",@"Engineer", nil];
+    NSArray *row1 = [NSArray arrayWithObjects:@"Jack mamamam",@"2",@"Shanghai",@"18",@"Engineer", nil];
     NSArray *row2 = [NSArray arrayWithObjects:@"Boo",@"23",@"Shanghai",@"18",@"Software Engineer", nil];
     
     self.data = [[NSMutableArray alloc] init];
@@ -53,29 +56,20 @@
     return [self.data count];
 }
 
--(UIView *)dataGridView:(RHDataGridView *)dataGridView headerForColumnAtIndex:(NSInteger)columnIndex{
+-(NSString *)dataGridView:(RHDataGridView *)dataGridView headerTextForColumnAtIndex:(NSInteger)columnIndex{
     NSString *headerTitle = [self.headers objectAtIndex:columnIndex];
     
-    UILabel *header = [[UILabel alloc] init];
-    header.text = headerTitle;
-    
-    return header;
+    return headerTitle;
 }
--(NSInteger)dataGridView:(RHDataGridView *)dataGridView heightForRowAtIndex:(NSInteger)rowIndex{
-    return 44;
-}
--(NSInteger)dataGridView:(RHDataGridView *)dataGridView widthForColumnAtIndex:(NSInteger)columnIndex{
-    // NSInteger width = [self.headers[columnIndex] sizeWithFont:UIFontTextStyleBody];
-    
-    return 100;
-}
--(UIView *)dataGridView:(RHDataGridView *)dataGridView cellForRowAtIndex:(NSInteger)rowIndex columnAtIndex:(NSInteger)columnIndex{
+//-(NSInteger)dataGridView:(RHDataGridView *)dataGridView widthForColumnAtIndex:(NSInteger)columnIndex{
+//    // NSInteger width = [self.headers[columnIndex] sizeWithFont:UIFontTextStyleBody];
+//    
+//    return 100;
+//}
+-(NSString *)dataGridView:(RHDataGridView *)dataGridView textForRowAtIndex:(NSInteger)rowIndex columnAtIndex:(NSInteger)columnIndex{
     NSArray *rowData = [self.data objectAtIndex:rowIndex];
     NSString *text = [rowData objectAtIndex:columnIndex];
-    UILabel *label = [[UILabel alloc] init];
-    label.text = text;
-    
-    return label;
+    return text;
 }
 
 @end
