@@ -53,8 +53,13 @@
     return [self.data count];
 }
 
--(NSString *)dataGridView:(RHDataGridView *)dataGridView titleForColumnAtIndex:(NSInteger)columnIndex{
-    return [self.headers objectAtIndex:columnIndex];
+-(UIView *)dataGridView:(RHDataGridView *)dataGridView headerForColumnAtIndex:(NSInteger)columnIndex{
+    NSString *headerTitle = [self.headers objectAtIndex:columnIndex];
+    
+    UILabel *header = [[UILabel alloc] init];
+    header.text = headerTitle;
+    
+    return header;
 }
 -(NSInteger)dataGridView:(RHDataGridView *)dataGridView heightForRowAtIndex:(NSInteger)rowIndex{
     return 44;

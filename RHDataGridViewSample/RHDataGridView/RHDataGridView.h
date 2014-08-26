@@ -15,7 +15,7 @@
 -(NSInteger)numberOfRowsInDataGridView:(RHDataGridView *)dataGridView;
 
 @optional
--(NSString *)dataGridView:(RHDataGridView *)dataGridView titleForColumnAtIndex:(NSInteger)columnIndex;
+-(UIView *)dataGridView:(RHDataGridView *)dataGridView headerForColumnAtIndex:(NSInteger)columnIndex;
 -(NSInteger)dataGridView:(RHDataGridView *)dataGridView widthForColumnAtIndex:(NSInteger)columnIndex;
 -(NSInteger)dataGridView:(RHDataGridView *)dataGridView heightForRowAtIndex:(NSInteger)rowIndex;
 -(UIView *)dataGridView:(RHDataGridView *)dataGridView cellForRowAtIndex:(NSInteger)rowIndex columnAtIndex:(NSInteger)columnIndex;

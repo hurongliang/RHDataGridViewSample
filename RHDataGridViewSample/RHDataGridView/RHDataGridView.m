@@ -79,12 +79,12 @@
     NSInteger offsetX = 20;
     for(NSInteger columnIndex = 0; columnIndex < [self.dataGridViewDelegate numberOfColumnsInDataGridView:self]; columnIndex++){
         NSInteger headerWidth = [self.dataGridViewDelegate dataGridView:self widthForColumnAtIndex:columnIndex];
-        NSString *headerText = [self.dataGridViewDelegate dataGridView:self titleForColumnAtIndex:columnIndex];
         
-        UILabel *headerLabel = [[UILabel alloc] initWithFrame:CGRectMake(offsetX, 0, headerWidth, height)];
-        headerLabel.text = headerText;
+        UIView *header = [self.dataGridViewDelegate dataGridView:self headerForColumnAtIndex:columnIndex];
         
-        [headerView addSubview:headerLabel];
+        [header setFrame:CGRectMake(offsetX, 0, headerWidth, height)];
+        
+        [headerView addSubview:header];
         
         offsetX += headerWidth;
     }
