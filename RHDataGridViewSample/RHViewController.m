@@ -11,7 +11,6 @@
 @interface RHViewController ()
 @property(strong,nonatomic)NSArray *headers;
 @property(strong,nonatomic)NSMutableArray *data;
-@property(strong,nonatomic)NSMutableArray *columnWidth;
 @property (weak, nonatomic) IBOutlet RHDataGridView *tableView;
 
 @end
@@ -24,7 +23,6 @@
     
     
     [self prepareData];
-    
     self.tableView.columnSpacing = 20;
     self.tableView.dataGridViewDelegate = self;
     
@@ -35,13 +33,14 @@
 -(void)prepareData{
     self.headers = [NSArray arrayWithObjects:@"Name",@"Age", @"Location",@"Tall",@"Job", nil];
     
-    NSArray *row1 = [NSArray arrayWithObjects:@"Jack mamamam",@"2",@"Shanghai",@"18",@"Engineer", nil];
-    NSArray *row2 = [NSArray arrayWithObjects:@"Boo",@"23",@"Shanghai",@"18",@"Software Engineer", nil];
-    
     self.data = [[NSMutableArray alloc] init];
-    [self.data addObject:row1];
-    [self.data addObject:row2];
-    
+    [self.data addObject:[NSArray arrayWithObjects:@"Jack mamamam",@"2",@"Shanghai",@"18",@"Engineer", nil]];
+    [self.data addObject:[NSArray arrayWithObjects:@"Jack mamamam",@"2",@"Shanghai",@"18",@"Engineer", nil]];
+}
+
+-(NSInteger) widthForText:(NSString *)text withFont:(UIFont *)font{
+    CGSize size = [text sizeWithAttributes:@{NSFontAttributeName:font}];
+    return size.width;
 }
 - (void)didReceiveMemoryWarning
 {

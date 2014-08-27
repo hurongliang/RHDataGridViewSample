@@ -8,12 +8,7 @@
 
 #import "RHDataGridView.h"
 
-@implementation RHDataGridView{
-    NSMutableArray *headers;
-    NSMutableDictionary *rows;
-    NSMutableArray *columnWidthList;
-    NSMutableDictionary *tableViewCellMap;
-}
+@implementation RHDataGridView
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -49,11 +44,20 @@
     self.dataSource = self;
     self.delegate = self;
     self.columnSpacing = 0;
-    
-    headers = [[NSMutableArray alloc] init];
-    rows = [[NSMutableDictionary alloc] init];
-    columnWidthList = [[NSMutableArray alloc] init];
-    tableViewCellMap = [[NSMutableDictionary alloc] init];
+}
+-(void)setDataSource:(id<UITableViewDataSource>)dataSource{
+    if(dataSource!=self){
+        NSLog(@"Warinng: delegate cannot be assigned outside.");
+        return;
+    }
+    [super setDataSource:dataSource];
+}
+-(void)setDelegate:(id<UITableViewDelegate>)delegate{
+    if(delegate!=self){
+        NSLog(@"Warning: delegate cannot be assigned outside.");
+        return;
+    }
+    [super setDelegate:delegate];
 }
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return 1;
@@ -74,60 +78,37 @@
     }
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    NSLog(@"cell for row %ld",(long)indexPath.row);
-    
-    UITableViewCell *cell = [tableViewCellMap objectForKey:indexPath];
-    
-    if(cell!=nil){
-        return cell;
-    }
-    
     NSInteger rowIndex = indexPath.row;
-    
     NSInteger rowHeight = [self tableView:tableView heightForRowAtIndexPath:indexPath];
     
+    /* create cell */
     static NSString *cellid = @"multipletableviewcell";
-    
-    cell = [tableView dequeueReusableCellWithIdentifier:cellid];
-    if(cell==nil){
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellid];
+    if(cell==nil){//not exists, create it
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellid];
         [cell setFrame:CGRectMake(0, 0, tableView.frame.size.width, rowHeight)];
     }
     
-    NSMutableArray *gridCellList = [[NSMutableArray alloc] init];
-    
     if([self.dataGridViewDelegate respondsToSelector:@selector(numberOfColumnsInDataGridView:)]){
         NSInteger offsetX = 20;
         for(NSInteger columnIndex=0;columnIndex<[self.dataGridViewDelegate numberOfColumnsInDataGridView:self];columnIndex++){
-            UILabel *dataGridCell = [[UILabel alloc] init];;
+            UILabel *cellLabel = [[UILabel alloc] init];;
             
+            /* set text */
             if([self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:textForRowAtIndex:columnAtIndex:)]){
                 NSString *dataGridCellText = [self.dataGridViewDelegate dataGridView:self textForRowAtIndex:rowIndex columnAtIndex:columnIndex];
-                [dataGridCell setText:dataGridCellText];
+                [cellLabel setText:dataGridCellText];
             }
             
-            NSInteger columnWidth = 0;
-            if([self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:widthForColumnAtIndex:)]){
-                columnWidth = [self.dataGridViewDelegate dataGridView:self widthForColumnAtIndex:columnIndex];
-            }else{
-                CGSize size = [dataGridCell.text sizeWithAttributes:@{NSFontAttributeName:dataGridCell.font}];
-                columnWidth = ceilf(size.width);
-            }
+            /* set frame */
+            NSInteger columnWidth = [self widthForColumnAtIndex:columnIndex withFont:cellLabel.font];
+            [cellLabel setFrame:CGRectMake(offsetX, 0, columnWidth, rowHeight)];
             
-            [dataGridCell setFrame:CGRectMake(offsetX, 0, columnWidth, rowHeight)];
-            
-            [gridCellList addObject:dataGridCell];
-            [cell addSubview:dataGridCell];
-            
-            [self recordMaxColumnWidth:columnWidth atColumnIndex:columnIndex];
+            [cell addSubview:cellLabel];
             
             offsetX += columnWidth+self.columnSpacing;
         }
     }
-    
-    [rows setObject:gridCellList forKey:indexPath];
-    
-    [tableViewCellMap setObject:cell forKey:indexPath];
     
     return cell;
 }
@@ -139,67 +120,32 @@
     NSInteger width = self.frame.size.width;
     NSInteger height = [self tableView:tableView heightForHeaderInSection:section];
     
-    [headers removeAllObjects];
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
     
     if([self.dataGridViewDelegate respondsToSelector:@selector(numberOfColumnsInDataGridView:)]){
         NSInteger offsetX = 20;
         for(NSInteger columnIndex = 0; columnIndex < [self.dataGridViewDelegate numberOfColumnsInDataGridView:self]; columnIndex++){
-            UILabel *header = [[UILabel alloc] init];
+            UILabel *headerLabel = [[UILabel alloc] init];
             
+            /* set text */
             if([self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:headerTextForColumnAtIndex:)]){
-                NSString *headerText = [self.dataGridViewDelegate dataGridView:self headerTextForColumnAtIndex:columnIndex];
-                [header setText:headerText];
+                [headerLabel setText: [self.dataGridViewDelegate dataGridView:self headerTextForColumnAtIndex:columnIndex]];
             }
             
-            NSInteger width = 0;
-            if([self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:widthForColumnAtIndex:)]){
-                width = [self.dataGridViewDelegate dataGridView:self widthForColumnAtIndex:columnIndex];
-            }else{
-                CGSize size = [header.text sizeWithAttributes:@{NSFontAttributeName:header.font}];
-                width = ceilf(size.width);
-            }
+            /* set frame */
+            NSInteger width = [self widthForColumnAtIndex:columnIndex withFont:headerLabel.font];
+            [headerLabel setFrame:CGRectMake(offsetX, 0, width, height)];
             
-            [header setFrame:CGRectMake(offsetX, 0, width, height)];
-            
-            [headers addObject:header];
-            [headerView addSubview:header];
-            
-            [self recordMaxColumnWidth:width atColumnIndex:columnIndex];
+            [headerView addSubview:headerLabel];
             
             offsetX += width+self.columnSpacing;
         }
-        
-        [headerView setBackgroundColor:[UIColor whiteColor]];
     }
     
-    if([self autoresizeColumnWidth]){
-        [self adjustColumnWidth];
-    }
+    [headerView setBackgroundColor:[UIColor whiteColor]];
     
     return headerView;
 }
--(void)recordMaxColumnWidth:(NSInteger)newWidth atColumnIndex:(NSInteger)columnIndex{
-    if(columnIndex<[columnWidthList count]){//exists
-        NSNumber *oldWidthNumber = [columnWidthList objectAtIndex:columnIndex];
-        NSInteger oldWidth = [oldWidthNumber integerValue];
-        if(oldWidth<newWidth){
-            [columnWidthList replaceObjectAtIndex:columnIndex withObject:[NSNumber numberWithInteger:newWidth]];
-        }
-    }else{//not exists
-        for(NSInteger i=[columnWidthList count];i<=columnIndex;i++){
-            if(i==columnIndex){
-                [columnWidthList addObject:[NSNumber numberWithInteger:newWidth]];
-            }else{
-                [columnWidthList addObject:[NSNumber numberWithInteger:0]];
-            }
-        }
-    }
-}
--(void)updateLabel:(UILabel *)label toX:(NSInteger)x toWidth:(NSInteger)width{
-        label.frame = CGRectMake(x, label.frame.origin.y, width, label.frame.size.height);
-}
-
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     if([self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:didSelectRowAtIndex:)]){
         [self.dataGridViewDelegate dataGridView:self didSelectRowAtIndex:indexPath.row];
@@ -210,41 +156,59 @@
         [self.dataGridViewDelegate dataGridView:self didDeselectRowAtIndex:indexPath.row];
     }
 }
--(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
-    if([indexPath row] == ((NSIndexPath*)[[tableView indexPathsForVisibleRows] lastObject]).row){
-        if([self autoresizeColumnWidth]){
-            [self adjustColumnWidth];
-        }
-    }
-}
--(BOOL)autoresizeColumnWidth{
-    return ![self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:widthForColumnAtIndex:)];
-}
--(void)adjustColumnWidth{
-    NSInteger x = 20;
-    for(NSInteger i=0;i<[headers count];i++){
-        UILabel *header = headers[i];
-        NSNumber *widthNumber = columnWidthList[i];
-        NSInteger width = [widthNumber integerValue];
-        
-        [self updateLabel:header toX:x toWidth:width];
-        
-        x += width + self.columnSpacing;
+
+#pragma mark - autoresize column width according content
+
+/**
+ *  Calc content width for column with specified font
+ *
+ *  @param columnIndex column index
+ *  @param font        font of column
+ *
+ *  @return content width
+ */
+-(NSInteger)widthForColumnAtIndex:(NSInteger)columnIndex withFont:(UIFont *)font{
+    
+    if([self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:widthForColumnAtIndex:)]){
+        return [self.dataGridViewDelegate dataGridView:self widthForColumnAtIndex:columnIndex];
     }
     
-    for(NSIndexPath *indexPath in tableViewCellMap){
-        NSMutableArray *cellList = [rows objectForKey:indexPath];
-        x = 20;
-        for(NSInteger i=0;i<[cellList count];i++){
-            UILabel *cell = [cellList objectAtIndex:i];
-            
-            NSNumber *widthNumber = columnWidthList[i];
-            NSInteger width = [widthNumber integerValue];
-            
-            [self updateLabel:cell toX:x toWidth:width];
-            
-            x += width += self.columnSpacing;
+    NSInteger width = 0;
+    
+    //header width
+    if([self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:headerTextForColumnAtIndex:)]){
+        NSString *headerText = [self.dataGridViewDelegate dataGridView:self headerTextForColumnAtIndex:columnIndex];
+        width = [self widthOfText:headerText andFont:font];
+    }
+    
+    //cell width
+    if([self.dataGridViewDelegate respondsToSelector:@selector(numberOfRowsInDataGridView:)]){
+        for (NSInteger rowIndex = 0; rowIndex < [self.dataGridViewDelegate numberOfRowsInDataGridView:self]; rowIndex++) {
+            if([self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:textForRowAtIndex:columnAtIndex:)]){
+                NSString *text = [self.dataGridViewDelegate dataGridView:self textForRowAtIndex:rowIndex columnAtIndex:columnIndex];
+                NSInteger curWidth = [self widthOfText:text andFont:font];
+                if(width<curWidth){
+                    width = curWidth;
+                }
+            }
         }
     }
+    
+    NSLog(@"column %d, width %d",columnIndex,width);
+    
+    return width;
+}
+
+/**
+ *  return text width with specified font
+ *
+ *  @param text text
+ *  @param font font of text
+ *
+ *  @return text width
+ */
+-(NSInteger) widthOfText:(NSString *)text andFont:(UIFont *)font{
+    CGSize size = [text sizeWithAttributes:@{NSFontAttributeName:font}];
+    return ceilf(size.width);
 }
 @end

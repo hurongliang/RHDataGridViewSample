@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "RHDataGridView.h"
 
-@interface RHViewController : UIViewController<RHDataGridViewDelegate>
+@interface RHViewController : UIViewController<RHDataGridViewDelegate,UITableViewDelegate>
 
 @end
