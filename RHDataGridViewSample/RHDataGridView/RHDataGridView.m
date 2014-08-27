@@ -8,7 +8,9 @@
 
 #import "RHDataGridView.h"
 
-@implementation RHDataGridView
+@implementation RHDataGridView{
+    NSMutableDictionary *widthOfColumns;
+}
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -44,6 +46,8 @@
     self.dataSource = self;
     self.delegate = self;
     self.columnSpacing = 0;
+    
+    widthOfColumns = [[NSMutableDictionary alloc] init];
 }
 -(void)setDataSource:(id<UITableViewDataSource>)dataSource{
     if(dataSource!=self){
@@ -169,6 +173,11 @@
  */
 -(NSInteger)widthForColumnAtIndex:(NSInteger)columnIndex withFont:(UIFont *)font{
     
+    NSNumber *existedWidth = [widthOfColumns objectForKey:[NSNumber numberWithInteger:columnIndex]];
+    if(existedWidth!=nil){
+        return [existedWidth integerValue];
+    }
+    
     if([self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:widthForColumnAtIndex:)]){
         return [self.dataGridViewDelegate dataGridView:self widthForColumnAtIndex:columnIndex];
     }
@@ -194,7 +203,7 @@
         }
     }
     
-    NSLog(@"column %d, width %d",columnIndex,width);
+    [widthOfColumns setObject:[NSNumber numberWithInteger:width] forKey:[NSNumber numberWithInteger:columnIndex]];
     
     return width;
 }
