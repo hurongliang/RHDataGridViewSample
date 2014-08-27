@@ -60,6 +60,9 @@
     
     return headerTitle;
 }
+-(NSTextAlignment)dataGridView:(RHDataGridView *)dataGridView textAlignmentForColumnAtIndex:(NSInteger)columnIndex{
+    return NSTextAlignmentRight;
+}
 //-(NSInteger)dataGridView:(RHDataGridView *)dataGridView widthForColumnAtIndex:(NSInteger)columnIndex{
 //    // NSInteger width = [self.headers[columnIndex] sizeWithFont:UIFontTextStyleBody];
 //    

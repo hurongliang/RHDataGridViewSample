@@ -104,6 +104,11 @@
                 [cellLabel setText:dataGridCellText];
             }
             
+            /* set text alignment */
+            if([self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:textAlignmentForColumnAtIndex:)]){
+                [cellLabel setTextAlignment:[self.dataGridViewDelegate dataGridView:self textAlignmentForColumnAtIndex:columnIndex]];
+            }
+            
             /* set frame */
             NSInteger columnWidth = [self widthForColumnAtIndex:columnIndex withFont:cellLabel.font];
             [cellLabel setFrame:CGRectMake(offsetX, 0, columnWidth, rowHeight)];
@@ -134,6 +139,11 @@
             /* set text */
             if([self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:headerTextForColumnAtIndex:)]){
                 [headerLabel setText: [self.dataGridViewDelegate dataGridView:self headerTextForColumnAtIndex:columnIndex]];
+            }
+            
+            /* set text alignment */
+            if([self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:textAlignmentForColumnAtIndex:)]){
+                [headerLabel setTextAlignment:[self.dataGridViewDelegate dataGridView:self textAlignmentForColumnAtIndex:columnIndex]];
             }
             
             /* set frame */
