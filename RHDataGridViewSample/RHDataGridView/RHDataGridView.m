@@ -9,7 +9,8 @@
 #import "RHDataGridView.h"
 
 @implementation RHDataGridView{
-    //NSMutableDictionary *widthOfColumns;
+    NSMutableDictionary *widthOfColumns;
+    NSMutableDictionary *cellCache;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -47,7 +48,13 @@
     self.delegate = self;
     self.columnSpacing = 0;
     
-    //widthOfColumns = [[NSMutableDictionary alloc] init];
+    widthOfColumns = [[NSMutableDictionary alloc] init];
+    cellCache = [[NSMutableDictionary alloc] init];
+}
+-(void)reloadData{
+    [widthOfColumns removeAllObjects];
+    [cellCache removeAllObjects];
+    [super reloadData];
 }
 -(void)setDataSource:(id<UITableViewDataSource>)dataSource{
     if(dataSource!=self){
@@ -82,6 +89,10 @@
     }
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    if([cellCache objectForKey:indexPath]!=nil){
+        return [cellCache objectForKey:indexPath];
+    }
+    
     NSInteger rowIndex = indexPath.row;
     NSInteger rowHeight = [self tableView:tableView heightForRowAtIndexPath:indexPath];
     
@@ -118,6 +129,8 @@
             offsetX += columnWidth+self.columnSpacing;
         }
     }
+    
+    [cellCache setObject:cell forKey:indexPath];
     
     return cell;
 }
@@ -183,10 +196,10 @@
  */
 -(NSInteger)widthForColumnAtIndex:(NSInteger)columnIndex withFont:(UIFont *)font{
     
-//    NSNumber *existedWidth = [widthOfColumns objectForKey:[NSNumber numberWithInteger:columnIndex]];
-//    if(existedWidth!=nil){
-//        return [existedWidth integerValue];
-//    }
+    NSNumber *existedWidth = [widthOfColumns objectForKey:[NSNumber numberWithInteger:columnIndex]];
+    if(existedWidth!=nil){
+        return [existedWidth integerValue];
+    }
     
     if([self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:widthForColumnAtIndex:)]){
         return [self.dataGridViewDelegate dataGridView:self widthForColumnAtIndex:columnIndex];
@@ -213,7 +226,7 @@
         }
     }
     
-    //[widthOfColumns setObject:[NSNumber numberWithInteger:width] forKey:[NSNumber numberWithInteger:columnIndex]];
+    [widthOfColumns setObject:[NSNumber numberWithInteger:width] forKey:[NSNumber numberWithInteger:columnIndex]];
     
     return width;
 }
