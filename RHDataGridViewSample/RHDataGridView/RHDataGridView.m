@@ -9,7 +9,7 @@
 #import "RHDataGridView.h"
 
 @implementation RHDataGridView{
-    NSMutableDictionary *widthOfColumns;
+    //NSMutableDictionary *widthOfColumns;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -47,7 +47,7 @@
     self.delegate = self;
     self.columnSpacing = 0;
     
-    widthOfColumns = [[NSMutableDictionary alloc] init];
+    //widthOfColumns = [[NSMutableDictionary alloc] init];
 }
 -(void)setDataSource:(id<UITableViewDataSource>)dataSource{
     if(dataSource!=self){
@@ -99,8 +99,8 @@
             UILabel *cellLabel = [[UILabel alloc] init];;
             
             /* set text */
-            if([self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:textForRowAtIndex:columnAtIndex:)]){
-                NSString *dataGridCellText = [self.dataGridViewDelegate dataGridView:self textForRowAtIndex:rowIndex columnAtIndex:columnIndex];
+            if([self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:contentForRowAtIndex:columnAtIndex:)]){
+                NSString *dataGridCellText = [self.dataGridViewDelegate dataGridView:self contentForRowAtIndex:rowIndex columnAtIndex:columnIndex];
                 [cellLabel setText:dataGridCellText];
             }
             
@@ -137,8 +137,8 @@
             UILabel *headerLabel = [[UILabel alloc] init];
             
             /* set text */
-            if([self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:headerTextForColumnAtIndex:)]){
-                [headerLabel setText: [self.dataGridViewDelegate dataGridView:self headerTextForColumnAtIndex:columnIndex]];
+            if([self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:titleForColumnAtIndex:)]){
+                [headerLabel setText: [self.dataGridViewDelegate dataGridView:self titleForColumnAtIndex:columnIndex]];
             }
             
             /* set text alignment */
@@ -183,10 +183,10 @@
  */
 -(NSInteger)widthForColumnAtIndex:(NSInteger)columnIndex withFont:(UIFont *)font{
     
-    NSNumber *existedWidth = [widthOfColumns objectForKey:[NSNumber numberWithInteger:columnIndex]];
-    if(existedWidth!=nil){
-        return [existedWidth integerValue];
-    }
+//    NSNumber *existedWidth = [widthOfColumns objectForKey:[NSNumber numberWithInteger:columnIndex]];
+//    if(existedWidth!=nil){
+//        return [existedWidth integerValue];
+//    }
     
     if([self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:widthForColumnAtIndex:)]){
         return [self.dataGridViewDelegate dataGridView:self widthForColumnAtIndex:columnIndex];
@@ -195,16 +195,16 @@
     NSInteger width = 0;
     
     //header width
-    if([self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:headerTextForColumnAtIndex:)]){
-        NSString *headerText = [self.dataGridViewDelegate dataGridView:self headerTextForColumnAtIndex:columnIndex];
+    if([self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:titleForColumnAtIndex:)]){
+        NSString *headerText = [self.dataGridViewDelegate dataGridView:self titleForColumnAtIndex:columnIndex];
         width = [self widthOfText:headerText andFont:font];
     }
     
     //cell width
     if([self.dataGridViewDelegate respondsToSelector:@selector(numberOfRowsInDataGridView:)]){
         for (NSInteger rowIndex = 0; rowIndex < [self.dataGridViewDelegate numberOfRowsInDataGridView:self]; rowIndex++) {
-            if([self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:textForRowAtIndex:columnAtIndex:)]){
-                NSString *text = [self.dataGridViewDelegate dataGridView:self textForRowAtIndex:rowIndex columnAtIndex:columnIndex];
+            if([self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:contentForRowAtIndex:columnAtIndex:)]){
+                NSString *text = [self.dataGridViewDelegate dataGridView:self contentForRowAtIndex:rowIndex columnAtIndex:columnIndex];
                 NSInteger curWidth = [self widthOfText:text andFont:font];
                 if(width<curWidth){
                     width = curWidth;
@@ -213,7 +213,7 @@
         }
     }
     
-    [widthOfColumns setObject:[NSNumber numberWithInteger:width] forKey:[NSNumber numberWithInteger:columnIndex]];
+    //[widthOfColumns setObject:[NSNumber numberWithInteger:width] forKey:[NSNumber numberWithInteger:columnIndex]];
     
     return width;
 }

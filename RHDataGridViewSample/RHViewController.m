@@ -38,10 +38,6 @@
     [self.data addObject:[NSArray arrayWithObjects:@"Jack mamamam",@"2",@"Shanghai",@"18",@"Engineer", nil]];
 }
 
--(NSInteger) widthForText:(NSString *)text withFont:(UIFont *)font{
-    CGSize size = [text sizeWithAttributes:@{NSFontAttributeName:font}];
-    return size.width;
-}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -55,20 +51,15 @@
     return [self.data count];
 }
 
--(NSString *)dataGridView:(RHDataGridView *)dataGridView headerTextForColumnAtIndex:(NSInteger)columnIndex{
+-(NSString *)dataGridView:(RHDataGridView *)dataGridView titleForColumnAtIndex:(NSInteger)columnIndex{
     NSString *headerTitle = [self.headers objectAtIndex:columnIndex];
     
     return headerTitle;
 }
 -(NSTextAlignment)dataGridView:(RHDataGridView *)dataGridView textAlignmentForColumnAtIndex:(NSInteger)columnIndex{
-    return NSTextAlignmentRight;
+    return NSTextAlignmentCenter;
 }
-//-(NSInteger)dataGridView:(RHDataGridView *)dataGridView widthForColumnAtIndex:(NSInteger)columnIndex{
-//    // NSInteger width = [self.headers[columnIndex] sizeWithFont:UIFontTextStyleBody];
-//    
-//    return 100;
-//}
--(NSString *)dataGridView:(RHDataGridView *)dataGridView textForRowAtIndex:(NSInteger)rowIndex columnAtIndex:(NSInteger)columnIndex{
+-(NSString *)dataGridView:(RHDataGridView *)dataGridView contentForRowAtIndex:(NSInteger)rowIndex columnAtIndex:(NSInteger)columnIndex{
     NSArray *rowData = [self.data objectAtIndex:rowIndex];
     NSString *text = [rowData objectAtIndex:columnIndex];
     return text;
