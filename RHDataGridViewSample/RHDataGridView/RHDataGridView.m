@@ -249,4 +249,9 @@
     CGSize size = [text sizeWithAttributes:@{NSFontAttributeName:font}];
     return ceilf(size.width);
 }
+
+-(NSInteger)widthForColumnAtIndex:(NSInteger)columnIndex{
+    NSNumber *widthNumber = [widthOfColumns objectForKey:[NSNumber numberWithInteger:columnIndex]];
+    return widthNumber==nil?0:[widthNumber integerValue];
+}
 @end

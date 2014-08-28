@@ -31,4 +31,5 @@
 @property(weak,nonatomic)id<RHDataGridViewDelegate> dataGridViewDelegate;
 @property(assign,nonatomic)NSInteger columnSpacing;
 
+-(NSInteger)widthForColumnAtIndex:(NSInteger)columnIndex;
 @end
