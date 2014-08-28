@@ -22,6 +22,8 @@
 -(NSString *)dataGridView:(RHDataGridView *)dataGridView contentForRowAtIndex:(NSInteger)rowIndex columnAtIndex:(NSInteger)columnIndex;
 -(void)dataGridView:(RHDataGridView *)dataGridView didSelectRowAtIndex:(NSInteger)rowIndex;
 -(void)dataGridView:(RHDataGridView *)dataGridView didDeselectRowAtIndex:(NSInteger)rowIndex;
+-(void)dataGridView:(RHDataGridView *)dataGridView willDisplayCell:(UITableViewCell *)cell forRowAtIndex:(NSInteger)rowIndex;
+-(void)dataGridView:(RHDataGridView *)dataGridView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndex:(NSInteger)rowIndex;
 @end
 
 @interface RHDataGridView : UITableView<UITableViewDataSource,UITableViewDelegate>

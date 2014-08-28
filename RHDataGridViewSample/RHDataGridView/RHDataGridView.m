@@ -98,11 +98,8 @@
     
     /* create cell */
     static NSString *cellid = @"multipletableviewcell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellid];
-    if(cell==nil){//not exists, create it
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellid];
-        [cell setFrame:CGRectMake(0, 0, tableView.frame.size.width, rowHeight)];
-    }
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellid];
+    [cell setFrame:CGRectMake(0, 0, tableView.frame.size.width, rowHeight)];
     
     if([self.dataGridViewDelegate respondsToSelector:@selector(numberOfColumnsInDataGridView:)]){
         NSInteger offsetX = 20;
@@ -183,7 +180,16 @@
         [self.dataGridViewDelegate dataGridView:self didDeselectRowAtIndex:indexPath.row];
     }
 }
-
+-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+    if([self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:willDisplayCell:forRowAtIndex:)]){
+        [self.dataGridViewDelegate dataGridView:self willDisplayCell:cell forRowAtIndex:indexPath.row];
+    }
+}
+-(void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+    if([self.dataGridViewDelegate respondsToSelector:@selector(dataGridView:didEndDisplayingCell:forRowAtIndex:)]){
+        [self.dataGridViewDelegate dataGridView:self didEndDisplayingCell:cell forRowAtIndex:indexPath.row];
+    }
+}
 #pragma mark - autoresize column width according content
 
 /**
